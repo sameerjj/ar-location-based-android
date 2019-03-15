@@ -34,8 +34,9 @@ public class AROverlayView extends View {
 
         //Demo points
         arPoints = new ArrayList<ARPoint>() {{
-            add(new ARPoint("Sun Wheel", 16.0404856, 108.2262447, 0));
-            add(new ARPoint("Linh Ung Pagoda", 16.1072989, 108.2343984, 0));
+            add(new ARPoint("Dundas Station", 43.657006, -79.452953, 141));
+            add(new ARPoint("casa loma",  43.678053, -79.409523, 141));
+            add(new ARPoint("CN Tower",  43.642566, -79.387057, 141));
         }};
     }
 
@@ -46,6 +47,11 @@ public class AROverlayView extends View {
 
     public void updateCurrentLocation(Location currentLocation){
         this.currentLocation = currentLocation;
+        this.invalidate();
+    }
+
+    public void addARPoint(ARPoint point){
+        arPoints.add(point);
         this.invalidate();
     }
 
@@ -75,11 +81,11 @@ public class AROverlayView extends View {
             // cameraCoordinateVector[2] is z, that always less than 0 to display on right position
             // if z > 0, the point will display on the opposite
             if (cameraCoordinateVector[2] < 0) {
-                float x  = (0.5f + cameraCoordinateVector[0]/cameraCoordinateVector[3]) * canvas.getWidth();
-                float y = (0.5f - cameraCoordinateVector[1]/cameraCoordinateVector[3]) * canvas.getHeight();
+                float x  = (0.5f + cameraCoordinateVector[0]/cameraCoordinateVector[3]) * canvas.getHeight();
+                float y = (0.5f - cameraCoordinateVector[1]/cameraCoordinateVector[3]) * canvas.getWidth();
 
-                canvas.drawCircle(x, y, radius, paint);
-                canvas.drawText(arPoints.get(i).getName(), x - (30 * arPoints.get(i).getName().length() / 2), y - 80, paint);
+                canvas.drawCircle(y, x, radius, paint);
+                canvas.drawText(arPoints.get(i).getName(), y - (30 * arPoints.get(i).getName().length() / 2), x - 80, paint);
             }
         }
     }

@@ -204,6 +204,7 @@ public class ARCamera extends ViewGroup implements SurfaceHolder.Callback {
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        //only called when view changes height or camera change. so that's fine
         if(camera != null) {
             this.cameraWidth = width;
             this.cameraHeight = height;
@@ -226,7 +227,7 @@ public class ARCamera extends ViewGroup implements SurfaceHolder.Callback {
         final float RIGHT = ratio;
         final float BOTTOM = -1;
         final float TOP = 1;
-        Matrix.frustumM(projectionMatrix, OFFSET, LEFT, RIGHT, BOTTOM, TOP, Z_NEAR, Z_FAR);
+        Matrix.frustumM(projectionMatrix, OFFSET, TOP, BOTTOM, LEFT, RIGHT, Z_NEAR, Z_FAR);
     }
 
     public float[] getProjectionMatrix() {

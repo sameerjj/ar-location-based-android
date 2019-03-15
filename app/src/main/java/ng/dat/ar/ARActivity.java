@@ -17,10 +17,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import ng.dat.ar.model.ARPoint;
 
 public class ARActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
 
@@ -37,13 +42,18 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
     public static final int REQUEST_LOCATION_PERMISSIONS_CODE = 0;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // 10 meters
-    private static final long MIN_TIME_BW_UPDATES = 0;//1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 1000;//1000 * 60 * 1; // 1 minute
 
     private LocationManager locationManager;
     public Location location;
     boolean isGPSEnabled;
     boolean isNetworkEnabled;
     boolean locationServiceAvailable;
+
+    private EditText latText;
+    private EditText lonText;
+    private EditText altText;
+    private Button addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +65,22 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         tvCurrentLocation = (TextView) findViewById(R.id.tv_current_location);
         arOverlayView = new AROverlayView(this);
+
+        latText = (EditText) findViewById(R.id.text_lat);
+        lonText = (EditText) findViewById(R.id.text_lon);
+        altText = (EditText) findViewById(R.id.text_alt);
+        addButton = (Button) findViewById(R.id.button_add);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                double lat = Double.parseDouble(latText.getText().toString());
+                double lon = Double.parseDouble(lonText.getText().toString());
+                double alt = Double.parseDouble(altText.getText().toString());
+                ARPoint point = new ARPoint("TEST", lat, lon, alt);
+                arOverlayView.addARPoint(point);
+            }
+        });
     }
 
     @Override
@@ -145,7 +171,7 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
     private void registerSensors() {
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
-                SensorManager.SENSOR_DELAY_FASTEST);
+                SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
@@ -228,6 +254,7 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
 
     @Override
     public void onLocationChanged(Location location) {
+        this.location = location;
         updateLatestLocation();
     }
 
